@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  backend:
+    container_name: fullstack-backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MONGO_URI=mongodb://mongo:27017/assignment
+      - JWT_SECRET=your_secret_key
+    depends_on:
+      - mongo
+
+  frontend:
+    container_name: fullstack-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000/api
+    depends_on:
+      - backend
+
+  mongo:
+    image: mongo:latest
+    container_name: mongodb-fullstack
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
